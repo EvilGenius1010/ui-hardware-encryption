@@ -10,6 +10,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useEffect,useState } from "react"
 
 const invoices = [
@@ -68,12 +69,11 @@ type FPGADataStruct={
     roundkeys:FixedLengthArray<number,14>
 }
 
-export default function DisplayData(){
 
-    const [fpgaData,setFpgaData] = useState<FPGADataStruct|null>(null)
+function DisplayData1(){
+
     return (
         <>
-        <div className="text-4xl">Encrypted Data:{fpgaData?.encrypted_data}</div>
         <Table>
       <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
@@ -85,6 +85,7 @@ export default function DisplayData(){
         </TableRow>
       </TableHeader>
       <TableBody>
+
         {invoices.map((invoice) => (
           <TableRow key={invoice.invoice}>
             <TableCell className="font-medium">{invoice.invoice}</TableCell>
@@ -93,6 +94,7 @@ export default function DisplayData(){
             <TableCell className="text-right">{invoice.totalAmount}</TableCell>
           </TableRow>
         ))}
+
       </TableBody>
       <TableFooter>
         <TableRow>
@@ -103,4 +105,14 @@ export default function DisplayData(){
     </Table>
         </>
     )
+}
+
+export default function DisplayData(){
+    const [fpgaData,setFpgaData] = useState<FPGADataStruct|null>(null)
+    return(
+        <div className="text-white">
+        <div className="text-4xl">Encrypted Data:{fpgaData?.encrypted_data}</div>
+    <DisplayData1/>
+    </div>
+)
 }
