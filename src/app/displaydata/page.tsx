@@ -1,118 +1,93 @@
-"use client"
+"use client";
 
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { useEffect,useState } from "react"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useState, useEffect } from "react";
+import { BounceLoader } from "react-spinners";
 
-const invoices = [
-    {
-      invoice: "INV001",
-      paymentStatus: "Paid",
-      totalAmount: "$250.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV002",
-      paymentStatus: "Pending",
-      totalAmount: "$150.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV003",
-      paymentStatus: "Unpaid",
-      totalAmount: "$350.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV004",
-      paymentStatus: "Paid",
-      totalAmount: "$450.00",
-      paymentMethod: "Credit Card",
-    },
-    {
-      invoice: "INV005",
-      paymentStatus: "Paid",
-      totalAmount: "$550.00",
-      paymentMethod: "PayPal",
-    },
-    {
-      invoice: "INV006",
-      paymentStatus: "Pending",
-      totalAmount: "$200.00",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      invoice: "INV007",
-      paymentStatus: "Unpaid",
-      totalAmount: "$300.00",
-      paymentMethod: "Credit Card",
-    },
-  ]
+export default function DisplayData() {
+  const searchParams = useSearchParams();
+  const phrase = searchParams.get('phrase');
+  const [isLoading, setIsLoading] = useState(true);
+  const [apiData, setApiData] = useState<any>(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/fpgadata');
+        const data = await response.json();
+        if (data.success) {
+          console.log(data.data)
+          setApiData(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-type FixedLengthArray<T, N extends number> = N extends 0
-  ? []
-  : { [K in keyof []]: T } & { length: N };
+    fetchData();
+  }, []);
 
-
-type FPGADataStruct={
-    encrypted_data:string,
-    roundkeys:FixedLengthArray<number,14>
-}
-
-
-function DisplayData1(){
-
+  if (isLoading) {
     return (
-        <>
-        <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+      <div className="flex flex-rows items-center min-h-screen justify-center">
+        <BounceLoader color="#ffffff" />
+      </div>
+    );
+  }
 
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-          </TableRow>
-        ))}
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      <h1 className="text-4xl font-bold mb-8">Encryption Results</h1>
+      <p className="text-xl mb-8">Original phrase: {phrase}</p>
 
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
-        </>
-    )
-}
+      {apiData && (
+        <div className="space-y-8">
+          <Card className="border bg-black p-6">
+            <CardContent>
+            <h2 className="text-2xl text-white">Encrypted Data</h2>
+              <p className="text-xl break-all p-4 rounded text-white">
+                {apiData.encrypted_data}
+            </p>
+            </CardContent>
+          </Card>
 
-export default function DisplayData(){
-    const [fpgaData,setFpgaData] = useState<FPGADataStruct|null>(null)
-    return(
-        <div className="text-white">
-        <div className="text-4xl">Encrypted Data:{fpgaData?.encrypted_data}</div>
-    <DisplayData1/>
+          <Card className="border bg-black p-6">
+            <CardContent>
+              <h2 className="text-2xl font-bold mb-4">Round Keys</h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-white">Round</TableHead>
+                    <TableHead className="text-white">Key Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {apiData.round_keys.map((key: string, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell className="text-white">{index + 1}</TableCell>
+                      <TableCell className="text-white break-all font-mono">
+                        {key}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
-)
+  );
 }

@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
 
-export default async function handler() {
+export async function GET() { // Change this to export specifically for GET method
   try {
     // Read data from Vivado-exported file (e.g., JSON)
-    const filePath = path.resolve('data', 'fpgadata.json');
+    const filePath = '/app/src/app/fpgadata.json'
     const data = fs.readFileSync(filePath, 'utf-8');
     const parsedData = JSON.parse(data);
 
