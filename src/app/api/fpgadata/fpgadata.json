@@ -1,6 +1,19 @@
 {
-    "encrypted_data":"82jsowiqjodjqwojo12e21",
-    "round_keys":["eb21bej12e12e","eqwlemq2eml2q","qwkneqwe123219","dasdkasndja","e90djq0jq","diowq29eq","dahahidas9ad21","dasdiu1231",
-"dasnjdk12e","dhwq9dwq9d","e2qe0e20q","daldlasnda","dahsdasod","ej2q20lqe"],"round_data":["round_1":{"subbytes":"12903912309128","mixcols":"213701231023"}]
-
+  "encrypted_data": "82jsowiqjodjqwojo12e21",
+  "round_keys": [
+    "eb21bej12e12e",
+    "eqwlemq2eml2q",
+    "qwkneqwe123219",
+    "dasdkasndja",
+    "e90djq0jq",
+    "diowq29eq",
+    "dahahidas9ad21",
+    "dasdiu1231",
+    "dasnjdk12e",
+    "dhwq9dwq9d",
+    "e2qe0e20q",
+    "daldlasnda",
+    "dahsdasod",
+    "ej2q20lqe"
+  ]
 }
